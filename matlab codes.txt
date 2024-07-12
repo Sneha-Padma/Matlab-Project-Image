@@ -1,0 +1,136 @@
+classdef casinogame < matlab.apps.AppBase
+
+    % Properties that correspond to app components
+    properties (Access = public)
+        UIFigure         matlab.ui.Figure
+        Spinner          matlab.ui.control.Spinner
+        STARTButton      matlab.ui.control.StateButton
+        WOWJACKPOTLabel  matlab.ui.control.Label
+        SAVEDLabel       matlab.ui.control.Label
+        FINELabel        matlab.ui.control.Label
+        BONUSLabel       matlab.ui.control.Label
+        GONELabel        matlab.ui.control.Label
+        Gauge            matlab.ui.control.Gauge
+    end
+
+    % Callbacks that handle component events
+    methods (Access = private)
+
+        % Value changed function: STARTButton
+        function STARTButtonValueChanged(app, event)
+          for i=1:20
+              pause(0.5);
+              r=randi([-100 100]);
+              app.Gauge.Value=r;
+              app.Spinner.Value=r;
+          end
+          app.Gauge.BackgroundColor=[1,0,0];%Red color
+          Pause(1);
+          app.Gauge.BackgroundColor=[0,1,0];%Green color
+          Pause(1);
+          app.Gauge.BackgroundColor=[0,0,1];%Blue color
+          Pause(1);
+          app.Gauge.BackgroundColor=[1,1,1];%Default color
+          
+        end
+    end
+
+    % Component initialization
+    methods (Access = private)
+
+        % Create UIFigure and components
+        function createComponents(app)
+
+            % Create UIFigure and hide until all components are created
+            app.UIFigure = uifigure('Visible', 'off');
+            app.UIFigure.Position = [100 100 640 480];
+            app.UIFigure.Name = 'MATLAB App';
+
+            % Create Gauge
+            app.Gauge = uigauge(app.UIFigure, 'circular');
+            app.Gauge.Limits = [-100 100];
+            app.Gauge.ScaleColors = [0.3922 0.8314 0.0745;0.302 0.7451 0.9333;1 1 0.0667;0.9294 0.6941 0.1255;1 0 0];
+            app.Gauge.ScaleColorLimits = [60 100;40 60;-20 40;-60 -20;-100 -60];
+            app.Gauge.FontColor = [1 1 1];
+            app.Gauge.Position = [187 116 308 308];
+
+            % Create GONELabel
+            app.GONELabel = uilabel(app.UIFigure);
+            app.GONELabel.FontSize = 18;
+            app.GONELabel.FontWeight = 'bold';
+            app.GONELabel.Position = [120 142 91 35];
+            app.GONELabel.Text = 'GONE!!!';
+
+            % Create BONUSLabel
+            app.BONUSLabel = uilabel(app.UIFigure);
+            app.BONUSLabel.FontSize = 18;
+            app.BONUSLabel.FontWeight = 'bold';
+            app.BONUSLabel.Position = [475 359 91 35];
+            app.BONUSLabel.Text = 'BONUS!!';
+
+            % Create FINELabel
+            app.FINELabel = uilabel(app.UIFigure);
+            app.FINELabel.FontSize = 18;
+            app.FINELabel.FontWeight = 'bold';
+            app.FINELabel.Position = [324 423 91 35];
+            app.FINELabel.Text = 'FINE!!';
+
+            % Create SAVEDLabel
+            app.SAVEDLabel = uilabel(app.UIFigure);
+            app.SAVEDLabel.FontSize = 18;
+            app.SAVEDLabel.FontWeight = 'bold';
+            app.SAVEDLabel.Position = [130 359 91 35];
+            app.SAVEDLabel.Text = 'SAVED..';
+
+            % Create WOWJACKPOTLabel
+            app.WOWJACKPOTLabel = uilabel(app.UIFigure);
+            app.WOWJACKPOTLabel.FontSize = 18;
+            app.WOWJACKPOTLabel.FontWeight = 'bold';
+            app.WOWJACKPOTLabel.Position = [464 134 166 35];
+            app.WOWJACKPOTLabel.Text = 'WOW..JACKPOT!!';
+
+            % Create STARTButton
+            app.STARTButton = uibutton(app.UIFigure, 'state');
+            app.STARTButton.ValueChangedFcn = createCallbackFcn(app, @STARTButtonValueChanged, true);
+            app.STARTButton.Text = 'START';
+            app.STARTButton.FontSize = 18;
+            app.STARTButton.FontWeight = 'bold';
+            app.STARTButton.FontAngle = 'italic';
+            app.STARTButton.Position = [25 422 87 35];
+
+            % Create Spinner
+            app.Spinner = uispinner(app.UIFigure);
+            app.Spinner.FontSize = 36;
+            app.Spinner.FontWeight = 'bold';
+            app.Spinner.Position = [246 17 183 79];
+
+            % Show the figure after all components are created
+            app.UIFigure.Visible = 'on';
+        end
+    end
+
+    % App creation and deletion
+    methods (Access = public)
+
+        % Construct app
+        function app = casinogame
+
+            % Create UIFigure and components
+            createComponents(app)
+
+            % Register the app with App Designer
+            registerApp(app, app.UIFigure)
+
+            if nargout == 0
+                clear app
+            end
+        end
+
+        % Code that executes before app deletion
+        function delete(app)
+
+            % Delete UIFigure when app is deleted
+            delete(app.UIFigure)
+        end
+    end
+end
